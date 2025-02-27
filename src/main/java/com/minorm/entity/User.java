@@ -1,13 +1,14 @@
 package com.minorm.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.minorm.converter.BirthdayConverter;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 
@@ -23,7 +24,15 @@ public class User {
     private String username;
     private String firstname;
     private String lastname;
+
+//    @Convert(converter = BirthdayConverter.class)
     @Column(name= "birth_date")
-    private LocalDate birthDate;
-    private Integer age;
+    private Birthday birthDate;
+
+//    @Column(columnDefinition = "jsonb", name = "info")
+//    @JdbcTypeCode(SqlTypes.JSON)
+//    private String info;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

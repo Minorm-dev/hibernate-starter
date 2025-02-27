@@ -1,5 +1,8 @@
 package com.minorm;
 
+import com.minorm.converter.BirthdayConverter;
+import com.minorm.entity.Birthday;
+import com.minorm.entity.Role;
 import com.minorm.entity.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -25,6 +28,8 @@ public class HibernateRunner {
         Configuration configuration = new Configuration();
         configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
 //        configuration.addAnnotatedClass(User.class);
+        configuration.addAttributeConverter(new BirthdayConverter());
+//        configuration.registerTypeOverride(new JsonBinaryType());
         configuration.configure();
 
         try (SessionFactory sessionFactory = configuration.buildSessionFactory()) {
@@ -32,13 +37,17 @@ public class HibernateRunner {
             session.beginTransaction();
 
             User user = User.builder()
-                    .username("ivan1@gmail.com")
+                    .username("ivan3@gmail.com")
                     .firstname("Ivan")
                     .lastname("Ivanov")
-                    .birthDate(LocalDate.of(2000,1,19))
-                    .age(25)
+//                    .info("""
+//                            "name": "Ivan",
+//                            "id": 25
+//                            """)
+                    .birthDate(new Birthday(LocalDate.of(2000,1,19)))
+                    .role(Role.ADMIN)
                     .build();
-            session.save(user); // need to use persist instead, but for this example save is OK
+            session.delete(user); // need to use persist instead, but for this example save is OK
             session.getTransaction().commit();
         }
     }
