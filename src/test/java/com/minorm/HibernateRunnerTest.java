@@ -1,8 +1,13 @@
 package com.minorm;
 
+import com.minorm.entity.Company;
 import com.minorm.entity.User;
+import com.minorm.util.HibernateUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
+import lombok.Cleanup;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -18,6 +23,19 @@ import static java.util.Optional.*;
 import static java.util.stream.Collectors.*;
 
 class HibernateRunnerTest {
+
+    @Test
+    void oneToMany() {
+        @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        var company = session.get(Company.class, 1);
+        System.out.println();
+
+        session.getTransaction().commit();
+    }
 
     @Test
     void checkReflectionApi() throws SQLException, IllegalAccessException {
@@ -56,5 +74,6 @@ class HibernateRunnerTest {
             preparedStatement.setObject(1, field.get(user));
         }
     }
+
 
 }
