@@ -8,11 +8,16 @@ import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "company")
+@EqualsAndHashCode(of = "username")
+@ToString(exclude = {"company", "profile", "userChats"})
 @Builder
 @Entity
 @Table(name = "users", schema = "public")
@@ -37,9 +42,25 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id") // company_primaryKey
     private Company company;
+
+    @OneToOne(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            optional = false
+    )
+    private Profile profile;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private List<UserChat> userChats = new ArrayList<>();
+
+//    public void addChat(Chat chat) {
+//        chats.add(chat);
+//        chat.getUsers().add(this);
+//    }
 
 //    @Column(columnDefinition = "jsonb", name = "info")
 //    @JdbcTypeCode(SqlTypes.JSON)
