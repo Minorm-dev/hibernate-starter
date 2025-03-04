@@ -49,7 +49,7 @@ class HibernateRunnerTest {
                     .company(google)
                     .build();
             session.save(manager);
-            session.flush();
+//            session.flush();
 
             session.clear();
 
