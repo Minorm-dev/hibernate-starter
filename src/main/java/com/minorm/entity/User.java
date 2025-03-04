@@ -28,10 +28,8 @@ public abstract class User implements Comparable<User>, BaseEntity<Long> {
 //    @SequenceGenerator(name = "user_gen", sequenceName = "users_id_seq", allocationSize = 1)
 //    private Long id;
 
-
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
 //    @EmbeddedId
@@ -50,12 +48,11 @@ public abstract class User implements Comparable<User>, BaseEntity<Long> {
 
     @OneToOne(mappedBy = "user",
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            optional = false
+            fetch = FetchType.LAZY
     )
     private Profile profile;
 
-    @Builder.Default
+//    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<UserChat> userChats = new ArrayList<>();
 
