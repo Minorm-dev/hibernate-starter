@@ -8,6 +8,7 @@ import lombok.Cleanup;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
+import util.HibernateTestUtil;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -23,6 +24,21 @@ import static java.util.Optional.*;
 import static java.util.stream.Collectors.*;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkH2() {
+        try (var sessionFactory = HibernateTestUtil.buildSessionFactory();
+             var session = sessionFactory.openSession()){
+            session.beginTransaction();
+
+            var company = Company.builder()
+                    .name("Google")
+                    .build();
+
+            session.save(company);
+            session.getTransaction().commit();
+        }
+    }
 
     @Test
     void localeInfo() {

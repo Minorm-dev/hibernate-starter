@@ -22,6 +22,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-log4j12:2.0.17'
 
 
+
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
@@ -30,6 +31,9 @@ dependencies {
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+//    testImplementation 'com.h2database:h2:2.3.232'
+    testImplementation 'org.testcontainers:postgresql:1.20.5'
+
 }
 
 test {

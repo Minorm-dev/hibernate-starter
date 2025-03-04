@@ -14,7 +14,7 @@ import java.time.Instant;
 @Builder
 @Entity
 @Table(name = "users_chat")
-public class UserChat {
+public class UserChat extends AuditableEntity<Long>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +27,6 @@ public class UserChat {
     @JoinColumn(name = "chat_id") // можно не добавлять эту аннотацию
     private Chat chat;
 
-    private Instant createdAt;
-
-    private String createdBy;
 
     public void setUser(User user) {
         this.user = user;

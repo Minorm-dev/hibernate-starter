@@ -18,15 +18,17 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "username")
 @ToString(exclude = {"company", "profile", "userChats"})
-@Builder
 @Entity
 @Table(name = "users", schema = "public")
-public class User implements Comparable<User>{
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class User implements Comparable<User>, BaseEntity<Long> {
 //
 //    @Id
 //    @GeneratedValue(generator = "user_gen", strategy = GenerationType.SEQUENCE)
 //    @SequenceGenerator(name = "user_gen", sequenceName = "users_id_seq", allocationSize = 1)
 //    private Long id;
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
