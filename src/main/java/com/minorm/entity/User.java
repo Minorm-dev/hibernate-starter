@@ -21,7 +21,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "users", schema = "public")
-public class User {
+public class User implements Comparable<User>{
 //
 //    @Id
 //    @GeneratedValue(generator = "user_gen", strategy = GenerationType.SEQUENCE)
@@ -56,6 +56,11 @@ public class User {
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<UserChat> userChats = new ArrayList<>();
+
+    @Override
+    public int compareTo(User o) {
+        return username.compareTo(o.username);
+    }
 
 //    public void addChat(Chat chat) {
 //        chats.add(chat);
