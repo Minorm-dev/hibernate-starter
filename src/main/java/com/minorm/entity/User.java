@@ -20,8 +20,7 @@ import java.util.Set;
 @ToString(exclude = {"company", "profile", "userChats"})
 @Entity
 @Table(name = "users", schema = "public")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User implements Comparable<User>, BaseEntity<Long> {
 //
 //    @Id
