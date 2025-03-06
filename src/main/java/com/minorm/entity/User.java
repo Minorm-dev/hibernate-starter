@@ -57,7 +57,7 @@ public class User implements Comparable<User>, BaseEntity<Long> {
     )
     private Profile profile;
 
-//    @Builder.Default
+    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<UserChat> userChats = new ArrayList<>();
 
