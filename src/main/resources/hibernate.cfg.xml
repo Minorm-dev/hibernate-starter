@@ -17,8 +17,6 @@
     <mapping class="com.minorm.entity.Profile"/>
     <mapping class="com.minorm.entity.Chat"/>
     <mapping class="com.minorm.entity.UserChat"/>
-    <mapping class="com.minorm.entity.Programmer"/>
-    <mapping class="com.minorm.entity.Manager"/>
 
     <!-- DB schema will be updated if needed -->
     <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
