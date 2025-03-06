@@ -1,16 +1,20 @@
 package com.minorm.dao;
 
-import com.minorm.dto.CompanyDto;
 import com.minorm.entity.*;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.query.criteria.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserDao {
     private static final UserDao INSTANCE = new UserDao();
 
@@ -20,15 +24,16 @@ public class UserDao {
     public List<User> findAll(Session session) {
 //        return session.createQuery("select u from User u", User.class)
 //                .list();
-        var cb = session.getCriteriaBuilder();
-
-        var criteria = cb.createQuery(User.class);
-        var user = criteria.from(User.class);
-
-        criteria.select(user);
-
-        return session.createQuery(criteria)
-                .list();
+//        var cb = session.getCriteriaBuilder();
+//
+//        var criteria = cb.createQuery(User.class);
+//        var user = criteria.from(User.class);
+//
+//        criteria.select(user);
+//
+//        return session.createQuery(criteria)
+//                .list();
+        return Collections.emptyList();
     }
 
     /**
@@ -40,17 +45,18 @@ public class UserDao {
 //                .setParameter("firstName", firstName)
 //                .list();
 
-        var cb = session.getCriteriaBuilder();
-
-        var criteria = cb.createQuery(User.class);
-        var user = criteria.from(User.class);
-
-        criteria.select(user).where(
-                cb.equal(user.get(User_.personalInfo).get(PersonalInfo_.firstname), firstName));
-
-
-        return session.createQuery(criteria)
-                .list();
+//        var cb = session.getCriteriaBuilder();
+//
+//        var criteria = cb.createQuery(User.class);
+//        var user = criteria.from(User.class);
+//
+//        criteria.select(user).where(
+//                cb.equal(user.get(User_.personalInfo).get(PersonalInfo_.firstname), firstName));
+//
+//
+//        return session.createQuery(criteria)
+//                .list();
+        return Collections.emptyList();
     }
 
     /**
@@ -59,21 +65,22 @@ public class UserDao {
     public List<User> findLimitedUsersOrderedByBirthday(Session session, int limit) {
 //        return session.createQuery("select u from User u order by u.personalInfo.birthDate", User.class)
 //                .setMaxResults(limit)
-//               .setFirstResult(offset)
+//                .setFirstResult(offset)
 //                .list();
 
-        var cb = session.getCriteriaBuilder();
-
-        var criteria = cb.createQuery(User.class);
-        var user = criteria.from(User.class);
-
-        criteria.select(user).orderBy(cb.asc
-                (user.get(User_.personalInfo).get(PersonalInfo_.birthDate))
-        );
-
-        return session.createQuery(criteria)
-                .setMaxResults(limit)
-                .list();
+//        var cb = session.getCriteriaBuilder();
+//
+//        var criteria = cb.createQuery(User.class);
+//        var user = criteria.from(User.class);
+//
+//        criteria.select(user).orderBy(cb.asc
+//                (user.get(User_.personalInfo).get(PersonalInfo_.birthDate))
+//        );
+//
+//        return session.createQuery(criteria)
+//                .setMaxResults(limit)
+//                .list();
+        return Collections.emptyList();
     }
 
     /**
@@ -86,18 +93,19 @@ public class UserDao {
 //                .setParameter("companyName", companyName)
 //                .list();
 
-        var cb = session.getCriteriaBuilder();
-
-        var criteria = cb.createQuery(User.class);
-        var company = criteria.from(Company.class);
-        var users = company.join(Company_.users);
-
-        criteria.select(users).where(
-                cb.equal(company.get(Company_.name), companyName)
-        );
-
-        return session.createQuery(criteria)
-                .list();
+//        var cb = session.getCriteriaBuilder();
+//
+//        var criteria = cb.createQuery(User.class);
+//        var company = criteria.from(Company.class);
+//        var users = company.join(Company_.users);
+//
+//        criteria.select(users).where(
+//                cb.equal(company.get(Company_.name), companyName)
+//        );
+//
+//        return session.createQuery(criteria)
+//                .list();
+        return Collections.emptyList();
     }
 
     /**
@@ -113,22 +121,24 @@ public class UserDao {
 //                .setParameter("companyName", companyName)
 //                .list();
 
-        var cb = session.getCriteriaBuilder();
+//        var cb = session.getCriteriaBuilder();
+//
+//        var criteria = cb.createQuery(Payment.class);
+//        var payment = criteria.from(Payment.class);
+//        var user = payment.join(Payment_.receiver);
+//        var company = user.join(User_.company);
+//
+//        criteria.select(payment).where(
+//                cb.equal(company.get(Company_.name), companyName)
+//        )
+//                .orderBy(cb.asc(user.get(User_.personalInfo).get(PersonalInfo_.firstname)),
+//                        cb.asc(payment.get(Payment_.amount))
+//                );
+//
+//        return session.createQuery(criteria)
+//                .list();
 
-        var criteria = cb.createQuery(Payment.class);
-        var payment = criteria.from(Payment.class);
-        var user = payment.join(Payment_.receiver);
-        var company = user.join(User_.company);
-
-        criteria.select(payment).where(
-                cb.equal(company.get(Company_.name), companyName)
-        )
-                .orderBy(cb.asc(user.get(User_.personalInfo).get(PersonalInfo_.firstname)),
-                        cb.asc(payment.get(Payment_.amount))
-                );
-
-        return session.createQuery(criteria)
-                .list();
+        return Collections.emptyList();
     }
 
     /**
@@ -143,27 +153,29 @@ public class UserDao {
 //                .setParameter("lastName", lastName)
 //                .uniqueResult();
 
-        var cb = session.getCriteriaBuilder();
+//        var cb = session.getCriteriaBuilder();
+//
+//        var criteria = cb.createQuery(Double.class);
+//
+//        var payment = criteria.from(Payment.class);
+//        var user = payment.join(Payment_.receiver);
+//
+//        List<Predicate> predicates = new ArrayList<>();
+//        if (firstName != null) {
+//            predicates.add(cb.equal(user.get(User_.personalInfo).get(PersonalInfo_.firstname), firstName));
+//        }
+//        if (lastName != null) {
+//            predicates.add(cb.equal(user.get(User_.personalInfo).get(PersonalInfo_.lastname), lastName));
+//        }
+//
+//        criteria.select(cb.avg(payment.get(Payment_.amount))).where(
+//                predicates.toArray(Predicate[]::new)
+//        );
+//
+//        return session.createQuery(criteria)
+//                .uniqueResult();
 
-        var criteria = cb.createQuery(Double.class);
-
-        var payment = criteria.from(Payment.class);
-        var user = payment.join(Payment_.receiver);
-
-        List<Predicate> predicates = new ArrayList<>();
-        if (firstName != null) {
-            predicates.add(cb.equal(user.get(User_.personalInfo).get(PersonalInfo_.firstname), firstName));
-        }
-        if (lastName != null) {
-            predicates.add(cb.equal(user.get(User_.personalInfo).get(PersonalInfo_.lastname), lastName));
-        }
-
-        criteria.select(cb.avg(payment.get(Payment_.amount))).where(
-                predicates.toArray(Predicate[]::new)
-        );
-
-        return session.createQuery(criteria)
-                .uniqueResult();
+        return Double.MAX_VALUE;
 
     }
 
@@ -171,12 +183,12 @@ public class UserDao {
      * Возвращает для каждой компании: название, среднюю зарплату всех её сотрудников. Компании упорядочены по названию.
      */
     public List<Object[]> findCompanyNamesWithAvgUserPaymentsOrderedByCompanyName(Session session) {
-        return session.createQuery("select c.name, avg(p.amount) from Company c " +
-                                   "join c.users u " +
-                                   "join u.payments p " +
-                                   "group by c.name " +
-                                   "order by c.name", Object[].class)
-                .list();
+//        return session.createQuery("select c.name, avg(p.amount) from Company c " +
+//                                   "join c.users u " +
+//                                   "join u.payments p " +
+//                                   "group by c.name " +
+//                                   "order by c.name", Object[].class)
+//                .list();
 
 //        var cb = session.getCriteriaBuilder();
 //
@@ -195,6 +207,8 @@ public class UserDao {
 //
 //        return session.createQuery(criteria)
 //                .list();
+
+        return Collections.emptyList();
     }
 
     /**
@@ -203,12 +217,12 @@ public class UserDao {
      * Упорядочить по имени сотрудника
      */
     public List<Object[]> isItPossible(Session session) {
-        return session.createQuery("select u, avg(p.amount) from User u " +
-                                   "join u.payments p " +
-                                   "group by u " +
-                                   "having avg(p.amount) > (select avg(p.amount) from Payment p) " +
-                                   "order by u.personalInfo.firstname", Object[].class)
-                .list();
+//        return session.createQuery("select u, avg(p.amount) from User u " +
+//                                   "join u.payments p " +
+//                                   "group by u " +
+//                                   "having avg(p.amount) > (select avg(p.amount) from Payment p) " +
+//                                   "order by u.personalInfo.firstname", Object[].class)
+//                .list();
 
 //        var cb = session.getCriteriaBuilder();
 //
@@ -234,6 +248,8 @@ public class UserDao {
 //
 //        return session.createQuery(criteria)
 //                .list();
+
+        return Collections.emptyList();
     }
 
     public static UserDao getInstance() {
