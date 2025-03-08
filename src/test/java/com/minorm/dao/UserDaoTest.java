@@ -3,7 +3,7 @@ package com.minorm.dao;
 import com.minorm.dto.PaymentFilter;
 import com.minorm.entity.Payment;
 import com.minorm.entity.User;
-import com.minorm.util.HibernateTestUtil;
+import util.HibernateTestUtil;
 import com.minorm.util.TestDataImporter;
 import com.querydsl.core.Tuple;
 import lombok.Cleanup;
