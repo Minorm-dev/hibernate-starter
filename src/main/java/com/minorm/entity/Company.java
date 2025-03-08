@@ -1,19 +1,44 @@
 package com.minorm.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.SortNatural;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapKey;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.OneToMany;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "users")
 @EqualsAndHashCode(of = "name")
+@ToString(exclude = "users")
 @Builder
 @Entity
-public class Company {
+//@BatchSize(size = 3)
+@Audited
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Companies")
+public class Company implements BaseEntity<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,29 +49,23 @@ public class Company {
 
     @Builder.Default
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    // using mappedBy instead of JoinColumn annotation
-//    @JoinColumn(name = "company_id")
-//    @OrderBy("personalInfo.firstname")
-//    @org.hibernate.annotations.OrderBy(clause = "username DESC, lastname ASC") // deprecated
-//    @OrderColumn(name = "id")
     @MapKey(name = "username")
     @SortNatural
+    @NotAudited
     private Map<String, User> users = new TreeMap<>();
-
 
     @Builder.Default
     @ElementCollection
     @CollectionTable(name = "company_locale", joinColumns = @JoinColumn(name = "company_id"))
-//    @AttributeOverride(name = "lang", column = @Column(name = "lang")) // if it has diff names
+//    @AttributeOverride(name = "lang", column = @Column(name = "language"))
 //    private List<LocaleInfo> locales = new ArrayList<>();
-//    @Column(name = "description")
     @MapKeyColumn(name = "lang")
-    private Map<String, String > locales = new HashMap<>(); // uses for read-only mode
-
+    @Column(name = "description")
+    @NotAudited
+    private Map<String, String> locales = new HashMap<>();
 
     public void addUser(User user) {
         users.put(user.getUsername(), user);
         user.setCompany(this);
     }
-
 }

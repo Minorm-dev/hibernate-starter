@@ -7,7 +7,7 @@ import org.hibernate.proxy.ProxyConfiguration;
 import org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor;
 
 public class CompanyProxy extends Company
-        implements HibernateProxy, ProxyConfiguration { // uses in fetch.LAZY
+        implements HibernateProxy, ProxyConfiguration {
 
     private ByteBuddyInterceptor byteBuddyInterceptor;
 

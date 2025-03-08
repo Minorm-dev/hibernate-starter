@@ -1,18 +1,18 @@
 package com.minorm.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Embeddable
@@ -23,7 +23,6 @@ public class PersonalInfo implements Serializable {
 
     private String firstname;
     private String lastname;
-
-//    @Column(name = "birth_date")
+    @NotNull
     private LocalDate birthDate;
 }

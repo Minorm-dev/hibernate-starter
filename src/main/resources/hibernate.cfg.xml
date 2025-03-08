@@ -8,15 +8,24 @@
     <property name="connection.username">postgres</property>
     <property name="connection.password">postgres1</property>
     <property name="connection.driver_class">org.postgresql.Driver</property>
-    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
     <property name="show_sql">true</property>
     <property name="format_sql">true</property>
+    <property name="hibernate.hbm2ddl.auto">validate</property>
+    <property name="hibernate.cache.use_second_level_cache">true</property>
+    <property name="hibernate.cache.use_query_cache">true</property>
+    <property name="hibernate.generate_statistics">false</property>
+    <property name="hibernate.cache.region.factory_class">org.hibernate.cache.jcache.internal.JCacheRegionFactory</property>
+    <property name="hibernate.javax.cache.uri">/ehcache-config.xml</property>
+    <property name="hibernate.current_session_context_class">thread</property>
+    <!--        <property name="hibernate.connection.isolation">8</property>-->
 
     <mapping class="com.minorm.entity.User"/>
     <mapping class="com.minorm.entity.Company"/>
     <mapping class="com.minorm.entity.Profile"/>
     <mapping class="com.minorm.entity.Chat"/>
     <mapping class="com.minorm.entity.UserChat"/>
+    <mapping class="com.minorm.entity.Payment"/>
 
     <!-- DB schema will be updated if needed -->
     <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->

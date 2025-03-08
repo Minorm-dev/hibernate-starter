@@ -1,71 +1,71 @@
 package com.minorm;
 
-import com.minorm.entity.*;
-import com.minorm.util.HibernateUtil;
-import jakarta.persistence.Column;
-import jakarta.persistence.FlushModeType;
-import jakarta.persistence.Table;
-import lombok.Cleanup;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.annotations.QueryHints;
-import org.hibernate.query.Query;
-import org.junit.jupiter.api.Test;
+import com.minorm.entity.Chat;
+import com.minorm.entity.Company;
+import com.minorm.entity.User;
+import com.minorm.entity.UserChat;
 import util.HibernateTestUtil;
+import com.minorm.util.HibernateUtil;
+import lombok.Cleanup;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.QueryHints;
+import org.junit.jupiter.api.Test;
 
+import javax.persistence.Column;
+import javax.persistence.FlushModeType;
+import javax.persistence.Table;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static java.util.Optional.*;
-import static java.util.stream.Collectors.*;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
 
 class HibernateRunnerTest {
 
     @Test
-    void checkHQL() {
+    void checkHql() {
         try (var sessionFactory = HibernateTestUtil.buildSessionFactory();
              var session = sessionFactory.openSession()) {
             session.beginTransaction();
 
+//            HQL / JPQL
+//            select u.* from users u where u.firstname = 'Ivan'
+            String name = "Ivan";
             var result = session.createNamedQuery(
-//                            "select u from User u where u.personalInfo.firstname = ?1", User.class)
+//                    "select u from User u where u.personalInfo.firstname = ?1", User.class)
                             "findUserByName", User.class)
-                    .setParameter("firstname", "Petr")
-                    .setParameter("companyName", "Amazon")
-                    .setFlushMode(FlushModeType.AUTO)
+//                    .setParameter(1, name)
+                    .setParameter("firstname", name)
+                    .setParameter("companyName", "Google")
+                    .setFlushMode(FlushModeType.COMMIT)
                     .setHint(QueryHints.FETCH_SIZE, "50")
                     .list();
 
-            session.createQuery("update User u set u.role = 'ADMIN'")
+            var countRows = session.createQuery("update User u set u.role = 'ADMIN'")
                     .executeUpdate();
 
-            session.createNativeQuery("select u.* from users u where u.firstname = 'Petr'", User.class);
+            session.createNativeQuery("select u.* from users u where u.firstname = 'Ivan'", User.class);
 
             session.getTransaction().commit();
         }
     }
 
-
     @Test
     void localeInfo() {
         try (var sessionFactory = HibernateTestUtil.buildSessionFactory();
-             var session = sessionFactory.openSession()){
+             var session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            var company = session.get(Company.class, 2L);
+            var company = session.get(Company.class, 1);
 //            company.getLocales().add(LocaleInfo.of("ru", "Описание на русском"));
 //            company.getLocales().add(LocaleInfo.of("en", "English description"));
-
 //            System.out.println(company.getLocales());
-
             company.getUsers().forEach((k, v) -> System.out.println(v));
 
             session.getTransaction().commit();
@@ -73,32 +73,31 @@ class HibernateRunnerTest {
     }
 
     @Test
-    void checkManyToMany(){
+    void checkManyToMany() {
         try (var sessionFactory = HibernateUtil.buildSessionFactory();
-             var session = sessionFactory.openSession()){
+             var session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            var user = session.get(User.class, 5L);
+            var user = session.get(User.class, 10L);
             var chat = session.get(Chat.class, 1L);
 
-//            var userChat = UserChat.builder()
+            var userChat = UserChat.builder()
 //                    .createdAt(Instant.now())
 //                    .createdBy(user.getUsername())
-//                    .build();
-//            userChat.setUser(user);
-//            userChat.setChat(chat);
+                    .build();
+            userChat.setUser(user);
+            userChat.setChat(chat);
 
-//            session.save(userChat);
+            session.save(userChat);
 
 //            user.getChats().clear();
 
 //            var chat = Chat.builder()
-//                    .name("minorm")
+//                    .name("dmdev")
 //                    .build();
-//
 //            user.addChat(chat);
+//
 //            session.save(chat);
-
 
             session.getTransaction().commit();
         }
@@ -107,23 +106,21 @@ class HibernateRunnerTest {
     @Test
     void checkOneToOne() {
         try (var sessionFactory = HibernateUtil.buildSessionFactory();
-             var session = sessionFactory.openSession()){
+             var session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            var user = session.get(User.class, 6L);
+            var user = session.get(User.class, 10L);
             System.out.println();
-
 
 //            var user = User.builder()
 //                    .username("test4@gmail.com")
 //                    .build();
-//
 //            var profile = Profile.builder()
 //                    .language("ru")
-//                    .street("Lenina 20")
+//                    .street("Kolasa 18")
 //                    .build();
-//
 //            profile.setUser(user);
+////
 //            session.save(user);
 //            profile.setUser(user);
 //            session.save(profile);
@@ -133,44 +130,54 @@ class HibernateRunnerTest {
     }
 
     @Test
-    void checkOrphanRemoval() {
+    void checkOrhanRemoval() {
         try (var sessionFactory = HibernateUtil.buildSessionFactory();
-             var session = sessionFactory.openSession()){
+             var session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            Company company = session.get(Company.class, 1);
-//            company.getUsers().removeIf(user -> user.getId().equals(1L));
+            Company company = session.getReference(Company.class, 1);
+//            company.getUsers().removeIf(user -> user.getId().equals(7L));
 
             session.getTransaction().commit();
         }
     }
 
     @Test
-    void checkLazyInitialization() {
+    void checkLazyInitialisation() {
         Company company = null;
         try (var sessionFactory = HibernateUtil.buildSessionFactory();
-            var session = sessionFactory.openSession()){
+             var session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            company = session.get(Company.class, 3);
-
+            company = session.getReference(Company.class, 1);
 
             session.getTransaction().commit();
         }
         var users = company.getUsers();
-        System.out.println(users.size()); //throw exception because of session
+        System.out.println(users.size());
+    }
 
+    @Test
+    void getCompanyById() {
+        @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        var company = session.get(Company.class, 1);
+        Hibernate.initialize(company.getUsers());
+        System.out.println();
+
+        session.getTransaction().commit();
     }
 
     @Test
     void deleteCompany() {
         @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
         @Cleanup var session = sessionFactory.openSession();
-
         session.beginTransaction();
 
-        var company = session.get(Company.class, 3);
-        session.delete(company);
+        var user = session.get(User.class, 1L);
+        session.delete(user);
 
         session.getTransaction().commit();
     }
@@ -179,7 +186,6 @@ class HibernateRunnerTest {
     void addUserToNewCompany() {
         @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
         @Cleanup var session = sessionFactory.openSession();
-
         session.beginTransaction();
 
         var company = Company.builder()
@@ -189,12 +195,12 @@ class HibernateRunnerTest {
 //        var user = User.builder()
 //                .username("sveta@gmail.com")
 //                .build();
-
-//        user.setCompany(company);
-//        company.getUsers().add(user);
+////        user.setCompany(company);
+////        company.getUsers().add(user)
+//        company.addUser(user);
 //        company.addUser(user);
 
-        session.save(company); // CascadeType.ALL
+        session.save(company);
 
         session.getTransaction().commit();
     }
@@ -203,13 +209,29 @@ class HibernateRunnerTest {
     void oneToMany() {
         @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
         @Cleanup var session = sessionFactory.openSession();
-
         session.beginTransaction();
 
         var company = session.get(Company.class, 1);
-        System.out.println();
+        System.out.println(company.getUsers());
 
         session.getTransaction().commit();
+    }
+
+    @Test
+    void checkGetReflectionApi() throws SQLException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.getString("username");
+        resultSet.getString("lastname");
+        resultSet.getString("lastname");
+
+        Class<User> clazz = User.class;
+
+        Constructor<User> constructor = clazz.getConstructor();
+        User user = constructor.newInstance();
+        Field usernameField = clazz.getDeclaredField("username");
+        usernameField.setAccessible(true);
+        usernameField.set(user, resultSet.getString("username"));
     }
 
     @Test
@@ -229,6 +251,7 @@ class HibernateRunnerTest {
                 .orElse(user.getClass().getName());
 
         Field[] declaredFields = user.getClass().getDeclaredFields();
+
         String columnNames = Arrays.stream(declaredFields)
                 .map(field -> ofNullable(field.getAnnotation(Column.class))
                         .map(Column::name)
@@ -242,10 +265,10 @@ class HibernateRunnerTest {
         System.out.println(sql.formatted(tableName, columnNames, columnValues));
 
         Connection connection = null;
-        var preparedStatement = connection.prepareStatement(sql.formatted(tableName, columnNames, columnValues));
-        for (Field field : declaredFields) {
-            field.setAccessible(true);
-            preparedStatement.setObject(1, field.get(user));
+        PreparedStatement preparedStatement = connection.prepareStatement(sql.formatted(tableName, columnNames, columnValues));
+        for (Field declaredField : declaredFields) {
+            declaredField.setAccessible(true);
+            preparedStatement.setObject(1, declaredField.get(user));
         }
     }
 
